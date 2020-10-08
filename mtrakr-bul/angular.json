@@ -121,8 +121,13 @@
               "devServerTarget": "mtrakr-bul:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
-    }},
+    }
+  },
   "defaultProject": "mtrakr-bul"
 }

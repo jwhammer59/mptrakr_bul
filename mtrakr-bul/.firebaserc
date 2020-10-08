@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "ministriesplus": {
+      "hosting": {
+        "mtrakr-bul": [
+          "ministriesplus"
+        ]
+      }
+    }
+  }
+}
