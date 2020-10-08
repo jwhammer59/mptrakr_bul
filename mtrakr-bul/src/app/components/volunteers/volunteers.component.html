@@ -1,0 +1,26 @@
+<app-header [title]="headerTitle" [icon]="headerIcon"></app-header>
+<div class="columns is-centered">
+  <div class="column is-four-fifths mt-3">
+    <div class="panel is-link">
+      <div class="panel-heading">Volunteers Table</div>
+      <div class="level mt-4">
+        <div class="level-item has-text-centered">
+          <div>
+            <button
+              class="button is-link is-outlined"
+              routerLink="/volunteers/add-volunteer"
+            >
+              <span class="icon is-small mr-1">
+                <i class="fas fa-user-plus"></i>
+              </span>
+              Add Volunteers
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="pb-3">
+        <app-volunteer-table></app-volunteer-table>
+      </div>
+    </div>
+  </div>
+</div>

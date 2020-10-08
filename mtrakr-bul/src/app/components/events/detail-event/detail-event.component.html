@@ -1,0 +1,243 @@
+<app-header [title]="headerTitle" [icon]="headerIcon"></app-header>
+<div class="container">
+  <!-- Show Delete Volunteer Modal -->
+  <div class="modal" [class.is-active]="showDeleteModal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title"><span class="mr-3"><i class="fas fa-exclamation-triangle"></i></span>Delete Event</p>
+          <a
+            (click)="modalToggle()"
+            class="card-header-icon"
+            aria-label="close"
+          >
+            <span class="icon">
+              <i class="far fa-times-circle"></i>
+            </span>
+          </a>
+        </header>
+        <div class="card-content">
+          <div class="content">Are you sure?</div>
+          <div class="field has-addons">
+            <p class="control">
+              <button
+                class="button is-success"
+                (click)="modalDeleteResponse(true)"
+              >
+                <span class="icon is-small">
+                  <i class="far fa-thumbs-up"></i>
+                </span>
+                <span>Yes</span>
+              </button>
+            </p>
+            <p class="control">
+              <button
+                class="button is-danger"
+                (click)="modalDeleteResponse(false)"
+              >
+                <span class="icon is-small">
+                  <i class="far fa-thumbs-down"></i>
+                </span>
+                <span>No</span>
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <header class="card-header">
+      <p class="card-header-title">Event Type: {{ event.type }}</p>
+      <p class="card-header-title">Event Date: {{ event.date | date }}</p>
+      <div class="card-header-icon">
+        <div>
+          <span><strong>Event Status: </strong></span>
+          <label class="checkbox">
+            <input [checked]="event.isFull" type="checkbox" /> Event Full
+          </label>
+        </div>
+      </div>
+    </header>
+    <div class="card-content">
+      <div class="content">
+        <div class="columns">
+          <div class="column">
+            <div class="panel is-link">
+              <div class="panel-heading">Cantor, Lectors, Rosary & Tech</div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Cantor: {{ event.cantor }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Lector 1: {{ event.lector1 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Lector 2: {{ event.lector2 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Rosary 1: {{ event.rosary1 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Rosary 2: {{ event.rosary2 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Tech 1: {{ event.tech1 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Tech 2: {{ event.tech2 }}
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="panel is-link">
+              <div class="panel-heading">
+                Eucharistic Ministers of Holy Communion
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >EMoHC 1: {{ event.eMoHC1 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >EMoHC 2: {{ event.eMoHC2 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >EMoHC 3: {{ event.eMoHC3 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >EMoHC 4: {{ event.eMoHC4 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >EMoHC 5: {{ event.eMoHC5 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >EMoHC 6: {{ event.eMoHC6 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >EMoHC 7: {{ event.eMoHC7 }}
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="panel is-link">
+              <div class="panel-heading">Ushers & Mass Coordinator</div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Usher 1: {{ event.usher1 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Usher 2: {{ event.usher2 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Usher 3: {{ event.usher3 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Usher 4: {{ event.usher4 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Usher 5: {{ event.usher5 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Mass Coor: {{ event.massCord }}
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="panel is-link">
+              <div class="panel-heading">Servers, Gifts & Other</div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Server 1: {{ event.server1 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Server 2: {{ event.server2 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Server 3: {{ event.server3 }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Gifts: {{ event.gifts }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Gifts Child: {{ event.giftsChild }}
+              </div>
+              <div class="panel-block">
+                <span class="panel-icon"
+                  ><i class="fas fa-user" aria-hidden="true"></i></span
+                >Other : {{ event.other }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="card-footer">
+      <div class="card-footer-item">
+        <button class="button is-primary" routerLink="/events">
+          <span class="icon mr-1">
+            <i class="far fa-arrow-alt-circle-left"></i> </span
+          >Events
+        </button>
+      </div>
+      <div class="card-footer-item">
+        <button class="button is-info" routerLink="/events/edit-event/{{ id }}">
+          <span class="icon mr-1"> <i class="far fa-edit"></i> </span>Edit Event
+        </button>
+      </div>
+      <div class="card-footer-item">
+        <button class="button is-danger" (click)="onDeleteClicked()">
+          <span class="icon mr-1"> <i class="far fa-trash-alt"></i> </span
+          >Delete Event
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

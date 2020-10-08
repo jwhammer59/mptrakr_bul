@@ -1,0 +1,78 @@
+<div *ngIf="volunteers; else noData">
+  <div class="container is-fluid">
+    <table
+      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+    >
+      <thead>
+        <tr class="has-text-centered">
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Family ID</th>
+          <th></th>
+          <th>Is Available</th>
+          <th>Is Admin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let vol of volunteers
+              | paginate: { itemsPerPage: numPerPage, currentPage: p }
+          "
+          class="has-text-centered"
+        >
+          <td>{{ vol.firstName }}</td>
+          <td>{{ vol.lastName }}</td>
+          <td>{{ vol.email }}</td>
+          <td>{{ vol.phone | phone }}</td>
+          <td>{{ vol.familyID }}</td>
+          <td>
+            <button
+              class="button is-info is-small"
+              routerLink="/detail-volunteer/{{ vol.id }}"
+            >
+              <span class="icon is-small mr-1">
+                <i class="fas fa-info-circle"></i> </span
+              >Details
+            </button>
+          </td>
+          <td>
+            <label class="checkbox">
+              <input [checked]="vol.isAvailable" type="checkbox" />
+            </label>
+          </td>
+          <td>
+            <label class="checkbox">
+              <input [checked]="vol.isAdmin" type="checkbox" />
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="columns">
+      <div class="column">
+        <pagination-controls
+          class="app-pagination"
+          (pageChange)="p = $event"
+        ></pagination-controls>
+      </div>
+      <div class="column is-right">
+        <div class="page-select">
+          <div class="select">
+            <select (change)="updateItemsPerPage($event)">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #noData>
+  <h1>No Volunteers...</h1>
+</ng-template>

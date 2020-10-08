@@ -1,0 +1,441 @@
+<app-header [title]="headerTitle" [icon]="headerIcon"></app-header>
+<div class="main">
+  <div class="modal" [class.is-active]="showModal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">Form Error</p>
+          <a
+            (click)="modalToggle()"
+            class="card-header-icon"
+            aria-label="close"
+          >
+            <span class="icon">
+              <i class="far fa-times-circle"></i>
+            </span>
+          </a>
+        </header>
+        <div class="card-content">
+          <div class="content">{{ modalErrorText }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container is-fluid">
+    <!-- Start Form -->
+    <div *ngIf="volunteer | async; else loading">
+      <form
+        [formGroup]="volunteerEditForm"
+        (ngSubmit)="onSubmit(volunteerEditForm)"
+        novalidate
+      >
+        <!-- Start Upper Form Header Panel -->
+        <div class="panel is-link">
+          <div class="panel-heading">Personal Info</div>
+          <!-- Start of Personal Info -->
+          <div class="columns">
+            <div class="column is-three-quarters">
+              <div class="container is-fluid">
+                <div class="field is-horizontal mt-4">
+                  <div class="field-label is-normal">
+                    <label class="label">Name</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control is-expanded has-icons-left">
+                        <input
+                          class="input"
+                          type="text"
+                          placeholder="First Name"
+                          formControlName="firstName"
+                          required
+                        />
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-user"></i>
+                        </span>
+                      </div>
+                      <p
+                        *ngIf="f.firstName.invalid && f.firstName.touched"
+                        class="help is-danger"
+                      >
+                        First Name Required
+                      </p>
+                    </div>
+                    <div class="field">
+                      <div class="control is-expanded has-icons-left">
+                        <input
+                          class="input"
+                          type="text"
+                          placeholder="Last Name"
+                          formControlName="lastName"
+                          required
+                        />
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-user"></i>
+                        </span>
+                      </div>
+                      <p
+                        *ngIf="f.lastName.invalid && f.lastName.touched"
+                        class="help is-danger"
+                      >
+                        Last Name Required
+                      </p>
+                    </div>
+                    <div class="field">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select formControlName="familyID">
+                              <option>Select Family ID</option>
+                              <option
+                                *ngFor="let familyId of allFamilyIDs$ | async"
+                                [value]="familyId.familyID"
+                              >
+                                {{ familyId.familyID }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p class="help is-danger">Family ID Required</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Email - Phone</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div
+                        class="control is-expanded has-icons-left has-icons-right"
+                      >
+                        <input
+                          class="input"
+                          type="email"
+                          placeholder="Email"
+                          formControlName="email"
+                          required
+                        />
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-envelope"></i>
+                        </span>
+                        <span
+                          *ngIf="f.email.invalid"
+                          class="icon is-small is-right"
+                        >
+                          <i class="fas fa-exclamation-triangle"></i> </span
+                        ><span
+                          *ngIf="!f.email.invalid"
+                          class="icon is-small is-right"
+                        >
+                          <i class="fas fa-check"></i>
+                        </span>
+                      </div>
+                      <p
+                        *ngIf="f.email.invalid && f.email.touched"
+                        class="help"
+                      >
+                        {{ getEmailErrorMessage() }}
+                      </p>
+                    </div>
+                    <div class="field">
+                      <div
+                        class="control is-expanded has-icons-left has-icons-right"
+                      >
+                        <input
+                          class="input"
+                          type="tel"
+                          placeholder="Your phone number"
+                          formControlName="phone"
+                          maxlength="10"
+                          required
+                        />
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-phone"></i>
+                        </span>
+                        <span
+                          *ngIf="!f.phone.invalid && f.phone.touched"
+                          class="icon is-small is-right"
+                        >
+                          <i class="fas fa-check"></i>
+                        </span>
+                      </div>
+                      <p
+                        *ngIf="f.phone.invalid && f.phone.touched"
+                        class="help is-right"
+                      >
+                        {{ getPhoneErrorMessage() }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Address 1</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="text"
+                          placeholder="e.g. 123 Main Street"
+                          formControlName="address1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Address 2</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="text"
+                          placeholder="e.g. PO Box 33"
+                          formControlName="address2"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">City, State, Zip</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <p class="control is-expanded">
+                        <input
+                          class="input"
+                          type="tel"
+                          placeholder="Your City"
+                          formControlName="city"
+                          required
+                        />
+                      </p>
+                    </div>
+                    <div class="field">
+                      <p class="control is-expanded">
+                        <input
+                          class="input"
+                          type="tel"
+                          placeholder="Your State"
+                          formControlName="state"
+                          required
+                        />
+                      </p>
+                    </div>
+                    <div class="field">
+                      <p class="control is-expanded">
+                        <input
+                          class="input"
+                          type="tel"
+                          placeholder="Your Zipcode"
+                          formControlName="zipcode"
+                          maxLength="5"
+                          required
+                        />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="container mt-5">
+                  <div class="columns is-centered">
+                    <div class="column is-one-third">
+                      <div class="field">
+                        <label class="checkbox">
+                          <input type="checkbox" formControlName="isAdmin" />
+                          Is Admin
+                        </label>
+                      </div>
+                    </div>
+                    <div class="column is-one-third">
+                      <div class="field">
+                        <label class="checkbox">
+                          <input
+                            type="checkbox"
+                            formControlName="isAvailable"
+                          />
+                          Is Available
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <ng-template #eventUpdated>
+                <div class="panel mt-3 mr-3">
+                  <p class="panel-heading">Thank You!</p>
+                  <label class="panel-block">
+                    Event Days Available Updated!
+                  </label>
+                </div>
+              </ng-template>
+              <div *ngIf="!eventTypesAdded; else eventUpdated" class="panel is-link mt-3 mr-3">
+                <p class="panel-heading">Event Types</p>
+                <label class="panel-block">
+                  <input
+                    (click)="handleEventTimeCheckbox('Saturday')"
+                    type="checkbox"
+                    formControlName="isSaturday"
+                  />
+                  Available - Saturday
+                </label>
+                <label class="panel-block">
+                  <input
+                    (click)="handleEventTimeCheckbox('Sunday-Early')"
+                    type="checkbox"
+                    formControlName="isSundayEarly"
+                  />
+                  Available - Sunday-Early
+                </label>
+                <label class="panel-block">
+                  <input
+                    (click)="handleEventTimeCheckbox('Sunday-Late')"
+                    type="checkbox"
+                    formControlName="isSundayLate"
+                  />
+                  Available - Sunday-Late
+                </label>
+                <label class="panel-block">
+                  <input
+                    (click)="handleEventTimeCheckbox('Weekday')"
+                    type="checkbox"
+                    formControlName="isWeekday"
+                  />
+                  Available - Weekdays
+                </label>
+                <label *ngIf="eventCheckboxChecked" class="panel-block">
+                  <button [disabled]="eventTypesAdded" (click)="updateEventTypeList($event)" class="button is-success is-fullwidth">Save</button>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- End of Personal Info -->
+        </div>
+        <!-- End Upper Form Header Panel-->
+        <!-- Start Lower Form Header Panel-->
+        <div class="panel is-link">
+          <div class="panel-heading">Ministries</div>
+          <div class="container is-fluid mt-4 pb-4">
+            <div class="field is-horizontal">
+              <div class="field-body">
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isEMoHC" />
+                    EMoHC
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isCantor" />
+                    Cantor
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isLector" />
+                    Lector
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isUsher" />
+                    Usher
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isServer" />
+                    Server
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isMassCoord" />
+                    Mass Coordinator
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-horizontal">
+              <div class="field-body">
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isGifts" />
+                    Gifts
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isGiftsChild" />
+                    Child Gifts
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isRosary" />
+                    Rosary
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isTech" />
+                    Technology
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox">
+                    <input type="checkbox" formControlName="isOther" />
+                    Other
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Lower Form Header Panel-->
+        <!-- Start Button Panel-->
+        <div class="panel">
+          <div class="buttons pt-2 is-centered">
+            <button class="button is-info" routerLink="/volunteers">
+              <span class="icon is-small mr-1">
+                <i class="far fa-arrow-alt-circle-left"></i> </span
+              >Volunteers
+            </button>
+            <button
+              [disabled]="this.volunteerEditForm.pristine"
+              class="button is-success"
+              type="submit"
+              value="Submit"
+            >
+              <span class="icon is-small mr-1">
+                <i class="far fa-save"></i> </span
+              >Save
+            </button>
+            <button class="button is-danger" routerLink="/volunteers">
+              <span class="icon is-small mr-1">
+                <i class="far fa-times-circle"></i> </span
+              >Cancel
+            </button>
+          </div>
+        </div>
+        <!-- End Button Panel-->
+      </form>
+    </div>
+  </div>
+  <ng-template #loading>Loading volunteer...</ng-template>
+</div>

@@ -1,0 +1,66 @@
+<div *ngIf="events; else noData">
+  <div class="container is-fluid">
+    <table
+      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+    >
+      <thead>
+        <tr class="has-text-centered">
+          <th>Event Type</th>
+          <th>Event Date</th>
+          <th></th>
+          <th>Event Full</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let event of events
+              | paginate: { itemsPerPage: numPerPage, currentPage: p }
+          "
+          class="has-text-centered"
+        >
+          <td>{{ event.type }}</td>
+          <td>{{ event.date | date }}</td>
+          <td>
+            <button
+              class="button is-info is-small"
+              routerLink="/detail-event/{{ event.id }}"
+            >
+              <span class="icon is-small mr-1">
+                <i class="fas fa-info-circle"></i> </span
+              >Details
+            </button>
+          </td>
+          <td>
+            <label class="checkbox">
+              <input [checked]="event.isFull" type="checkbox" />
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="columns">
+      <div class="column">
+        <pagination-controls
+          class="app-pagination"
+          (pageChange)="p = $event"
+        ></pagination-controls>
+      </div>
+      <div class="column is-right">
+        <div class="page-select">
+          <div class="select">
+            <select (change)="updateItemsPerPage($event)">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #noData>
+  <h1>No Events...</h1>
+</ng-template>

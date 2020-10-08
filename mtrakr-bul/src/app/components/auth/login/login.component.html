@@ -1,0 +1,106 @@
+<div class="main columns is-centered">
+  <div class="modal" [class.is-active]="showModal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">Login Error</p>
+          <a
+            (click)="modalToggle()"
+            class="card-header-icon"
+            aria-label="close"
+          >
+            <span class="icon">
+              <i class="far fa-times-circle"></i>
+            </span>
+          </a>
+        </header>
+        <div class="card-content">
+          <div class="content">{{ modalErrorText }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="column is-half">
+    <div class="card">
+      <header class="card-header">
+        <h2 class="card-header-title">
+          <span class="icon is-small mr-3">
+            <i class="fas fa-sign-in-alt"></i>
+          </span>
+          Login
+        </h2>
+      </header>
+      <div class="card-content">
+        <div class="content">
+          <form
+            [formGroup]="loginForm"
+            (ngSubmit)="onSubmit(loginForm)"
+            novalidate
+          >
+            <div class="field">
+              <label class="label">Email</label>
+              <div class="control has-icons-left has-icons-right">
+                <input
+                  class="input"
+                  type="email"
+                  placeholder="Email input"
+                  formControlName="email"
+                  required
+                />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <span *ngIf="f.email.invalid" class="icon is-small is-right">
+                  <i class="fas fa-exclamation-triangle"></i> </span
+                ><span *ngIf="!f.email.invalid" class="icon is-small is-right">
+                  <i class="fas fa-check"></i>
+                </span>
+              </div>
+              <p *ngIf="f.email.invalid" class="help">
+                {{ getEmailErrorMessage() }}
+              </p>
+            </div>
+
+            <div class="field">
+              <label class="label">Password</label>
+              <div class="control has-icons-left has-icons-right">
+                <input
+                  class="input"
+                  placeholder="Enter your password"
+                  formControlName="password"
+                  type="password"
+                />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-user"></i>
+                </span>
+                <span *ngIf="f.password.invalid" class="icon is-small is-right">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </span>
+                <span
+                  *ngIf="!f.password.invalid"
+                  class="icon is-small is-right"
+                >
+                  <i class="fas fa-check"></i>
+                </span>
+              </div>
+              <p *ngIf="f.password.invalid" class="help">
+                {{ getPasswordErrorMessage() }}
+              </p>
+            </div>
+
+            <div class="field">
+              <button
+                class="control button is-fullwidth is-primary card-footer-item"
+                type="submit"
+                value="Submit"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1233 @@
+<app-header [title]="headerTitle" [icon]="headerIcon"></app-header>
+<div class="main">
+  <!-- Start Modal Div -->
+  <div class="modal" [class.is-active]="showModal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">{{ modalHeaderText }}</p>
+          <a
+            (click)="modalToggle(null)"
+            class="card-header-icon"
+            aria-label="close"
+          >
+            <span class="icon">
+              <i class="far fa-times-circle"></i>
+            </span>
+          </a>
+        </header>
+        <div class="card-content">
+          <div class="content">{{ modalErrorText }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal Div -->
+  <!-- Start Container Div -->
+  <div class="container is-fluid">
+    <!-- Start Form -->
+    <div *ngIf="event | async; else loading">
+      <form
+        [formGroup]="eventEditForm"
+        (ngSubmit)="onSubmit(eventEditForm)"
+        novalidate
+      >
+        <!-- Start Form Header Panel -->
+        <div class="panel is-link">
+          <div class="panel-heading">Event Data</div>
+          <div class="container is-fluid mt-4">
+            <label
+              >Event Completion Percent {{ prBarCounter | roundNum }}%</label
+            >
+            <progress
+              class="progress is-info is-small"
+              [value]="prBarCounter"
+              max="100"
+            ></progress>
+          </div>
+          <div class="container is-fluid">
+            <div class="columns mt-4">
+              <div class="column">
+                <div class="field">
+                  <div class="field-label is-normal">
+                    <label class="label">Event Type</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <div class="select is-fullwidth">
+                          <select
+                            #type
+                            formControlName="type"
+                            (change)="onEventTypeChanged(type.value)"
+                          >
+                            <option>Select Event Type</option>
+                            <option
+                              *ngFor="let type of eventTypes"
+                              [value]="type.value"
+                            >
+                              {{ type.viewValue }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <p
+                        *ngIf="!type.value && f.type.touched"
+                        class="help is-danger"
+                      >
+                        Please choose an Event Type
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <div class="field-label is-normal">
+                    <label class="label">Event Date</label>
+                  </div>
+                  <div class="control">
+                    <div class="date-input">
+                      <input
+                        (change)="setEventDate($event)"
+                        class="input"
+                        type="date"
+                        min="2020-01-01"
+                        max="2030-12-31"
+                        formControlName="date"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <div class="field-label is-normal">
+                    <label class="label">Event Status</label>
+                  </div>
+                  <div class="control">
+                    <div class="event-checkbox">
+                      <label class="checkbox">
+                        <input
+                          type="checkbox"
+                          [checked]="eventIsFull"
+                          formControlName="isFull"
+                          disabled
+                        />
+                        Event is Full
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Form Header Panel -->
+        <!-- Start of Main Form Panel -->
+        <div class="panel is-link">
+          <div class="panel-heading">Volunteer Data</div>
+          <!-- Start Main Form Panel -->
+          <div class="container is-fluid">
+            <div class="tabs is-centered">
+              <ul>
+                <li [class.is-active]="tabChoice == 1">
+                  <a (click)="tabSelect(1)">
+                    <span *ngIf="!tab1Ready" class="icon is-small"
+                      ><i
+                        class="fas fa-exclamation-triangle"
+                        aria-hidden="true"
+                      ></i
+                    ></span>
+                    <span *ngIf="tab1Ready" class="icon is-small"
+                      ><i class="fas fa-check" aria-hidden="true"></i
+                    ></span>
+                    <span>Cantor & Lectors</span></a
+                  >
+                </li>
+                <li [class.is-active]="tabChoice == 2">
+                  <a (click)="tabSelect(2)">
+                    <span *ngIf="!tab2Ready" class="icon is-small"
+                      ><i
+                        class="fas fa-exclamation-triangle"
+                        aria-hidden="true"
+                      ></i
+                    ></span>
+                    <span *ngIf="tab2Ready" class="icon is-small"
+                      ><i class="fas fa-check" aria-hidden="true"></i
+                    ></span>
+                    <span>EMoHC</span></a
+                  >
+                </li>
+                <li [class.is-active]="tabChoice == 3">
+                  <a (click)="tabSelect(3)">
+                    <span *ngIf="!tab3Ready" class="icon is-small"
+                      ><i
+                        class="fas fa-exclamation-triangle"
+                        aria-hidden="true"
+                      ></i></span
+                    ><span *ngIf="tab3Ready" class="icon is-small"
+                      ><i class="fas fa-check" aria-hidden="true"></i></span
+                    ><span>Ushers & Mass Coord</span></a
+                  >
+                </li>
+                <li [class.is-active]="tabChoice == 4">
+                  <a (click)="tabSelect(4)">
+                    <span *ngIf="!tab4Ready" class="icon is-small"
+                      ><i
+                        class="fas fa-exclamation-triangle"
+                        aria-hidden="true"
+                      ></i></span
+                    ><span *ngIf="tab4Ready" class="icon is-small"
+                      ><i class="fas fa-check" aria-hidden="true"></i></span
+                    ><span>Servers, Gifts & Other</span></a
+                  >
+                </li>
+                <li [class.is-active]="tabChoice == 5">
+                  <a (click)="tabSelect(5)">
+                    <span *ngIf="!tab5Ready" class="icon is-small"
+                      ><i
+                        class="fas fa-exclamation-triangle"
+                        aria-hidden="true"
+                      ></i></span
+                    ><span *ngIf="tab5Ready" class="icon is-small"
+                      ><i class="fas fa-check" aria-hidden="true"></i></span
+                    ><span>Rosary & Tech</span></a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- End of Tabs -->
+          <div class="container is-fluid mt-4">
+            <div *ngIf="tabChoice == 1">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Cantor</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #cantor
+                              formControlName="cantor"
+                              (change)="updateUI(cantor.value)"
+                            >
+                              <option>Select Cantor</option>
+                              <option
+                                *ngFor="let cantor of onlyCantors$ | async"
+                                [value]="
+                                  cantor.firstName + ' ' + cantor.lastName
+                                "
+                              >
+                                {{ cantor.firstName }} {{ cantor.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!cantor.value && f.cantor.touched"
+                          class="help is-danger"
+                        >
+                          Please choose an Cantor.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Lector 1</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #lector1
+                              formControlName="lector1"
+                              (change)="updateUI(lector1.value)"
+                            >
+                              <option>Select Lector 1</option>
+                              <option
+                                *ngFor="let lector1 of onlyLectors$ | async"
+                                [value]="
+                                  lector1.firstName + ' ' + lector1.lastName
+                                "
+                              >
+                                {{ lector1.firstName }} {{ lector1.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!lector1.value && f.lector1.touched"
+                          class="help is-danger"
+                        >
+                          Please choose a Lector.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Lector 2</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #lector2
+                              formControlName="lector2"
+                              (change)="updateUI(lector2.value)"
+                            >
+                              <option>Select Lector 2</option>
+                              <option
+                                *ngFor="let lector2 of onlyLectors$ | async"
+                                [value]="
+                                  lector2.firstName + ' ' + lector2.lastName
+                                "
+                              >
+                                {{ lector2.firstName }} {{ lector2.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!lector2.value && f.lector2.touched"
+                          class="help is-danger"
+                        >
+                          Please choose a Lector.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="tabChoice == 2">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">EMoHC 1</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #emohc1
+                              formControlName="eMoHC1"
+                              (change)="updateUI(emohc1.value)"
+                            >
+                              <option>Select EMoHC 1</option>
+                              <option
+                                *ngFor="let emohc1 of onlyEMoHCs$ | async"
+                                [value]="
+                                  emohc1.firstName + ' ' + emohc1.lastName
+                                "
+                              >
+                                {{ emohc1.firstName }} {{ emohc1.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!emohc1.value && f.emohc1.touched"
+                          class="help is-danger"
+                        >
+                          Please choose a EMoHC.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">EMoHC 2</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #emohc2
+                              formControlName="eMoHC2"
+                              (change)="updateUI(emohc2.value)"
+                            >
+                              <option>Select EMoHC 2</option>
+                              <option
+                                *ngFor="let emohc2 of onlyEMoHCs$ | async"
+                                [value]="
+                                  emohc2.firstName + ' ' + emohc2.lastName
+                                "
+                              >
+                                {{ emohc2.firstName }} {{ emohc2.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!emohc2.value && f.emohc2.touched"
+                          class="help is-danger"
+                        >
+                          Please choose a EMoHC.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">EMoHC 3</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #emohc3
+                              formControlName="eMoHC3"
+                              (change)="updateUI(emohc3.value)"
+                            >
+                              <option>Select EMoHC 3</option>
+                              <option
+                                *ngFor="let emohc3 of onlyEMoHCs$ | async"
+                                [value]="
+                                  emohc3.firstName + ' ' + emohc3.lastName
+                                "
+                              >
+                                {{ emohc3.firstName }} {{ emohc3.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!emohc3.value && f.emohc3.touched"
+                          class="help is-danger"
+                        >
+                          Please choose a EMoHC.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">EMoHC 4</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #emohc4
+                              formControlName="eMoHC4"
+                              (change)="updateUI(emohc4.value)"
+                            >
+                              <option>Select EMoHC 4</option>
+                              <option
+                                *ngFor="let emohc4 of onlyEMoHCs$ | async"
+                                [value]="
+                                  emohc4.firstName + ' ' + emohc4.lastName
+                                "
+                              >
+                                {{ emohc4.firstName }} {{ emohc4.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!emohc4.value && f.emohc4.touched"
+                          class="help is-danger"
+                        >
+                          Please choose a EHoMC.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">EMoHC 5</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #emohc5
+                              formControlName="eMoHC5"
+                              (change)="updateUI(emohc5.value)"
+                            >
+                              <option>Select EMoHC 5</option>
+                              <option
+                                *ngFor="let emohc5 of onlyEMoHCs$ | async"
+                                [value]="
+                                  emohc5.firstName + ' ' + emohc5.lastName
+                                "
+                              >
+                                {{ emohc5.firstName }} {{ emohc5.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!emohc5.value && f.emohc5.touched"
+                          class="help is-danger"
+                        >
+                          Please choose a EMoHC.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">EMoHC 6</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #emohc6
+                              formControlName="eMoHC6"
+                              (change)="updateUI(emohc6.value)"
+                            >
+                              <option>Select EMoHC 6</option>
+                              <option
+                                *ngFor="let emohc6 of onlyEMoHCs$ | async"
+                                [value]="
+                                  emohc6.firstName + ' ' + emohc6.lastName
+                                "
+                              >
+                                {{ emohc6.firstName }} {{ emohc6.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!emohc6.value && f.emohc6.touched"
+                          class="help is-danger"
+                        >
+                          Please choose a EMoHC.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">EMoHC 7</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #emohc7
+                              formControlName="eMoHC7"
+                              (change)="updateUI(emohc7.value)"
+                            >
+                              <option>Select EMoHC 7</option>
+                              <option
+                                *ngFor="let emohc7 of onlyEMoHCs$ | async"
+                                [value]="
+                                  emohc7.firstName + ' ' + emohc7.lastName
+                                "
+                              >
+                                {{ emohc7.firstName }} {{ emohc7.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!emohc7.value && f.emohc7.touched"
+                          class="help is-danger"
+                        >
+                          Please choose a EMoHC.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="tabChoice == 3">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Usher 1</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #usher1
+                              formControlName="usher1"
+                              (change)="updateUI(usher1.value)"
+                            >
+                              <option>Select Usher 1</option>
+                              <option
+                                *ngFor="let usher1 of onlyUshers$ | async"
+                                [value]="
+                                  usher1.firstName + ' ' + usher1.lastName
+                                "
+                              >
+                                {{ usher1.firstName }} {{ usher1.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!usher1.value && f.usher1.touched"
+                          class="help is-danger"
+                        >
+                          Please choose an Usher.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Usher 2</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #usher2
+                              formControlName="usher2"
+                              (change)="updateUI(usher2.value)"
+                            >
+                              <option>Select Usher 2</option>
+                              <option
+                                *ngFor="let usher2 of onlyUshers$ | async"
+                                [value]="
+                                  usher2.firstName + ' ' + usher2.lastName
+                                "
+                              >
+                                {{ usher2.firstName }} {{ usher2.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!usher2.value && f.usher2.touched"
+                          class="help is-danger"
+                        >
+                          Please choose an Usher.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Usher 3</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #usher3
+                              formControlName="usher3"
+                              (change)="updateUI(usher3.value)"
+                            >
+                              <option>Select Usher 3</option>
+                              <option
+                                *ngFor="let usher3 of onlyUshers$ | async"
+                                [value]="
+                                  usher3.firstName + ' ' + usher3.lastName
+                                "
+                              >
+                                {{ usher3.firstName }} {{ usher3.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!usher3.value && f.usher3.touched"
+                          class="help is-danger"
+                        >
+                          Please choose an Usher.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Usher 4</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #usher4
+                              formControlName="usher4"
+                              (change)="updateUI(usher4.value)"
+                            >
+                              <option>Select Usher 4</option>
+                              <option
+                                *ngFor="let usher4 of onlyUshers$ | async"
+                                [value]="
+                                  usher4.firstName + ' ' + usher4.lastName
+                                "
+                              >
+                                {{ usher4.firstName }} {{ usher4.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!usher4.value && f.usher4.touched"
+                          class="help is-danger"
+                        >
+                          Please choose an Usher.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Usher 5</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #usher5
+                              formControlName="usher5"
+                              (change)="updateUI(usher5.value)"
+                            >
+                              <option>Select Usher 5</option>
+                              <option
+                                *ngFor="let usher5 of onlyUshers$ | async"
+                                [value]="
+                                  usher5.firstName + ' ' + usher5.lastName
+                                "
+                              >
+                                {{ usher5.firstName }} {{ usher5.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!usher5.value && f.usher5.touched"
+                          class="help is-danger"
+                        >
+                          Please choose an Usher.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Mass Coordinator</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #massCord
+                              formControlName="massCord"
+                              (change)="updateUI(massCord.value)"
+                            >
+                              <option>Select Mass Coordinator</option>
+                              <option
+                                *ngFor="let massCord of onlyMassCoords$ | async"
+                                [value]="
+                                  massCord.firstName + ' ' + massCord.lastName
+                                "
+                              >
+                                {{ massCord.firstName }} {{ massCord.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!massCord.value && f.massCord.touched"
+                          class="help is-danger"
+                        >
+                          Please choose Mass Coordinator.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="tabChoice == 4">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Server 1</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #server1
+                              formControlName="server1"
+                              (change)="updateUI(server1.value)"
+                            >
+                              <option>Select Server 1</option>
+                              <option
+                                *ngFor="let server1 of onlyServers$ | async"
+                                [value]="
+                                  server1.firstName + ' ' + server1.lastName
+                                "
+                              >
+                                {{ server1.firstName }} {{ server1.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!server1.value && f.server1.touched"
+                          class="help is-danger"
+                        >
+                          Please choose volunteer for Server.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Server 2</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #server2
+                              formControlName="server2"
+                              (change)="updateUI(server2.value)"
+                            >
+                              <option>Select Server 2</option>
+                              <option
+                                *ngFor="let server2 of onlyServers$ | async"
+                                [value]="
+                                  server2.firstName + ' ' + server2.lastName
+                                "
+                              >
+                                {{ server2.firstName }} {{ server2.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!server2.value && f.server2.touched"
+                          class="help is-danger"
+                        >
+                          Please choose volunteer for Server.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Server 3</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #server3
+                              formControlName="server3"
+                              (change)="updateUI(server3.value)"
+                            >
+                              <option>Select Server 3</option>
+                              <option
+                                *ngFor="let server3 of onlyServers$ | async"
+                                [value]="
+                                  server3.firstName + ' ' + server3.lastName
+                                "
+                              >
+                                {{ server3.firstName }} {{ server3.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!server3.value && f.usher3.touched"
+                          class="help is-danger"
+                        >
+                          Please choose volunteer for Server.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Gifts</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #gifts
+                              formControlName="gifts"
+                              (change)="updateUI(gifts.value)"
+                            >
+                              <option>Select Gifts</option>
+                              <option
+                                *ngFor="let gifts of onlyGifts$ | async"
+                                [value]="gifts.firstName + ' ' + gifts.lastName"
+                              >
+                                {{ gifts.firstName }} {{ gifts.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!gifts.value && f.gifts.touched"
+                          class="help is-danger"
+                        >
+                          Please choose volunteer for Gifts.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Child Gifts</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #giftsChild
+                              formControlName="giftsChild"
+                              (change)="updateUI(giftsChild.value)"
+                            >
+                              <option>Select Child Gifts</option>
+                              <option
+                                *ngFor="
+                                  let giftsChild of onlyGiftsChild$ | async
+                                "
+                                [value]="
+                                  giftsChild.firstName +
+                                  ' ' +
+                                  giftsChild.lastName
+                                "
+                              >
+                                {{ giftsChild.firstName }}
+                                {{ giftsChild.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!giftsChild.value && f.giftsChild.touched"
+                          class="help is-danger"
+                        >
+                          Please choose volunteer for Childs Gifts.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Other</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #other
+                              formControlName="other"
+                              (change)="updateUI(other.value)"
+                            >
+                              <option>Select Other</option>
+                              <option
+                                *ngFor="let other of onlyOthers$ | async"
+                                [value]="other.firstName + ' ' + other.lastName"
+                              >
+                                {{ other.firstName }} {{ other.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p class="help is-danger">Other not required.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="tabChoice == 5">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Rosary 1</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #rosary1
+                              formControlName="rosary1"
+                              (change)="updateUI(rosary1.value)"
+                            >
+                              <option>Select Rosary 1</option>
+                              <option
+                                *ngFor="let rosary1 of onlyRosarys$ | async"
+                                [value]="
+                                  rosary1.firstName + ' ' + rosary1.lastName
+                                "
+                              >
+                                {{ rosary1.firstName }}
+                                {{ rosary1.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!rosary1.value && f.rosary1.touched"
+                          class="help is-danger"
+                        >
+                          Please choose volunteer for Rosary.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Rosary 2</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #rosary2
+                              formControlName="rosary2"
+                              (change)="updateUI(rosary2.value)"
+                            >
+                              <option>Select Rosary 2</option>
+                              <option
+                                *ngFor="let rosary2 of onlyRosarys$ | async"
+                                [value]="
+                                  rosary2.firstName + ' ' + rosary2.lastName
+                                "
+                              >
+                                {{ rosary2.firstName }}
+                                {{ rosary2.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!rosary2.value && f.rosary2.touched"
+                          class="help is-danger"
+                        >
+                          Please choose volunteer for Rosary.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Technology 1</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #tech1
+                              formControlName="tech1"
+                              (change)="updateUI(tech1.value)"
+                            >
+                              <option>Select Technology 1</option>
+                              <option
+                                *ngFor="let tech1 of onlyTechs$ | async"
+                                [value]="tech1.firstName + ' ' + tech1.lastName"
+                              >
+                                {{ tech1.firstName }}
+                                {{ tech1.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!tech1.value && f.tech1.touched"
+                          class="help is-danger"
+                        >
+                          Please choose volunteer for Technology.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <div class="field-label is-normal">
+                      <label class="label">Technology 2</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select
+                              #tech2
+                              formControlName="tech2"
+                              (change)="updateUI(tech2.value)"
+                            >
+                              <option>Select Technology 2</option>
+                              <option
+                                *ngFor="let tech2 of onlyTechs$ | async"
+                                [value]="tech2.firstName + ' ' + tech2.lastName"
+                              >
+                                {{ tech2.firstName }}
+                                {{ tech2.lastName }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <p
+                          *ngIf="!tech2.value && f.tech2.touched"
+                          class="help is-danger"
+                        >
+                          Please choose volunteer for Technology.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End of Main Form Panel -->
+        <!-- Start of Lower Form Panel-->
+        <div class="panel">
+          <div class="container is-fluid mt-4">
+            <div class="columns">
+              <div class="column">
+                <div class="field">
+                  <label class="checkbox">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="incompleteEventApproval"
+                      [ngModelOptions]="{ standalone: true }"
+                    />
+                    Incomplete Event Approval
+                  </label>
+                </div>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <label class="checkbox">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="duplicateVolunteerApproval"
+                      [ngModelOptions]="{ standalone: true }"
+                    />
+                    Duplicate Volunteer Approval
+                  </label>
+                </div>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <label class="checkbox">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="checkForMatchingFamily"
+                      [ngModelOptions]="{ standalone: true }"
+                    />
+                    Check for Matching Family
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="buttons mt-5 is-centered">
+              <button class="button is-info" routerLink="/events">
+                <span class="icon is-small mr-1">
+                  <i class="far fa-arrow-alt-circle-left"></i> </span
+                >Events
+              </button>
+              <button class="button is-success" type="submit" value="Submit">
+                <span class="icon is-small mr-1">
+                  <i class="far fa-save"></i> </span
+                >Save
+              </button>
+              <button class="button is-danger" routerLink="/events">
+                <span class="icon is-small mr-1">
+                  <i class="far fa-times-circle"></i> </span
+                >Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- End of Lower Form Panel-->
+      </form>
+    </div>
+    <!-- End Form -->
+  </div>
+  <!-- End Container Div -->
+</div>
+<!-- End Main Div -->
+<ng-template #loading>Loading...</ng-template>

@@ -1,0 +1,129 @@
+<div>
+  <div class="modal" [class.is-active]="showDeleteModal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">
+            <span class="mr-3"><i class="fas fa-exclamation-triangle"></i></span
+            >Delete Family ID
+          </p>
+          <a
+            (click)="modalToggle()"
+            class="card-header-icon"
+            aria-label="close"
+          >
+            <span class="icon">
+              <i class="far fa-times-circle"></i>
+            </span>
+          </a>
+        </header>
+        <div class="card-content">
+          <div class="content">Are you sure?</div>
+          <div class="field has-addons">
+            <p class="control">
+              <button
+                class="button is-success"
+                (click)="modalDeleteResponse(true)"
+              >
+                <span class="icon is-small">
+                  <i class="far fa-thumbs-up"></i>
+                </span>
+                <span>Yes</span>
+              </button>
+            </p>
+            <p class="control">
+              <button
+                class="button is-danger"
+                (click)="modalDeleteResponse(false)"
+              >
+                <span class="icon is-small">
+                  <i class="far fa-thumbs-down"></i>
+                </span>
+                <span>No</span>
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="familyIDs; else noData">
+    <div class="container is-fluid">
+      <table
+        id="family-id"
+        class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+      >
+        <thead>
+          <tr class="has-text-centered">
+            <th>Head of House</th>
+            <th>Family ID</th>
+            <th>Is Active</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let familyId of familyIDs
+                | paginate: { itemsPerPage: numPerPage, currentPage: p }
+            "
+            class="has-text-centered"
+          >
+            <td>{{ familyId.householdFullName }}</td>
+            <td>{{ familyId.familyID }}</td>
+            <td><input [checked]="[familyId.isActive]" type="checkbox" /></td>
+            <td>
+              <div class="field is-grouped pl-6">
+                <p class="control">
+                  <button
+                    class="button is-info is-small"
+                    routerLink="/edit-family-id/{{ familyId.id }}"
+                  >
+                    <span class="icon mr-1"> <i class="far fa-edit"></i> </span
+                    >Edit
+                  </button>
+                </p>
+                <p class="control">
+                  <button
+                    class="button is-danger is-small"
+                    (click)="
+                      onDeleteFamilyIdClicked(familyId.id, familyId.familyID)
+                    "
+                  >
+                    <span class="icon mr-1">
+                      <i class="far fa-trash-alt"></i> </span
+                    >Delete
+                  </button>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="columns">
+        <div class="column">
+          <pagination-controls
+            class="app-pagination"
+            (pageChange)="p = $event"
+          ></pagination-controls>
+        </div>
+        <div class="column is-right">
+          <div class="page-select">
+            <div class="select">
+              <select (change)="updateItemsPerPage($event)">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #noData>
+  <h1>No Family ID's...</h1>
+</ng-template>

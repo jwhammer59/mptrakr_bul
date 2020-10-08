@@ -1,0 +1,109 @@
+<app-header [title]="headerTitle" [icon]="headerIcon"></app-header>
+<div class="main">
+  <div class="container is-fluid">
+    <div *ngIf="familyID | async; else noData">
+      <form
+        [formGroup]="editFamilyIdForm"
+        (ngSubmit)="onSubmit(editFamilyIdForm)"
+        novalidate
+      >
+        <div class="panel">
+          <div class="panel-heading">Family ID</div>
+          <div class="container is-fluid">
+            <div class="columns mt-4">
+              <div class="column">
+                <div class="field">
+                  <div class="field-label is-normal">
+                    <label class="label">Household Full Name</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control is-expanded has-icons-left">
+                        <input
+                          class="input"
+                          type="text"
+                          placeholder="Full Name"
+                          formControlName="householdFullName"
+                          required
+                        />
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-user"></i>
+                        </span>
+                      </div>
+                      <p class="help is-danger">Household Full Name Required</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="field">
+                  <div class="field-label is-normal">
+                    <label class="label">Family ID</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control is-expanded has-icons-left">
+                        <input
+                          class="input"
+                          type="text"
+                          placeholder="Family ID"
+                          formControlName="familyID"
+                          required
+                        />
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-user"></i>
+                        </span>
+                      </div>
+                      <p class="help is-danger">Family ID Required</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="field">
+                  <div class="field-label is-normal">
+                    <label class="label">Family ID Is Active</label>
+                  </div>
+                  <div class="control">
+                    <div class="is-active-checkbox">
+                      <label class="checkbox">
+                        <input type="checkbox" formControlName="isActive" />
+                        Is Active
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Start Button Panel-->
+        <div class="panel">
+          <div class="buttons pt-2 is-centered">
+            <button class="button is-info" routerLink="/family-ids">
+              <span class="icon is-small mr-1">
+                <i class="far fa-arrow-alt-circle-left"></i> </span
+              >Family ID's
+            </button>
+            <button class="button is-success" type="submit" value="Submit">
+              <span class="icon is-small mr-1">
+                <i class="far fa-save"></i> </span
+              >Save
+            </button>
+            <button class="button is-danger" routerLink="/family-ids">
+              <span class="icon is-small mr-1">
+                <i class="far fa-times-circle"></i> </span
+              >Cancel
+            </button>
+          </div>
+        </div>
+        <!-- End Button Panel-->
+      </form>
+    </div>
+  </div>
+</div>
+<ng-template #noData>
+  <h2>No Family ID...</h2>
+</ng-template>

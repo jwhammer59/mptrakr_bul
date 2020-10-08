@@ -1,0 +1,70 @@
+<app-header [title]="headerTitle" [icon]="headerIcon"></app-header>
+<div class="columns is-centered">
+  <div class="column is-four-fifths mt-3">
+    <div class="panel is-link mb-3">
+      <div class="panel-heading">Dashboard</div>
+      <div class="container is-fluid mt-3">
+        <button
+          class="button is-link is-outlined navbar-item"
+          routerLink="/add-volunteer"
+        >
+          <span class="icon">
+            <i class="fas fa-plus"></i>
+          </span>
+          <span>Add Volunteer</span>
+        </button>
+      </div>
+      <div class="container is-fluid mt-3 pb-3">
+        <div class="panel is-warning">
+          <div class="panel-heading">Volunteers</div>
+          <div class="columns my-4">
+            <app-volunteer-table></app-volunteer-table>
+          </div>
+        </div>
+      </div>
+
+      <div class="container is-fluid mt-3">
+        <div class="columns">
+          <div class="column is-half">
+            <div class="mb-3">
+              <button
+                class="button is-link is-outlined navbar-item"
+                routerLink="/add-event"
+              >
+                <span class="icon">
+                  <i class="fas fa-plus"></i>
+                </span>
+                <span>Add Event</span>
+              </button>
+            </div>
+            <div class="panel is-warning">
+              <div class="panel-heading">Events</div>
+              <div class="my-5">
+                <app-event-table></app-event-table>
+              </div>
+            </div>
+          </div>
+          <div class="column is-half">
+            <div class="mb-3">
+              <button
+                class="button is-link is-outlined navbar-item"
+                routerLink="/add-family-id"
+              >
+                <span class="icon">
+                  <i class="fas fa-plus"></i>
+                </span>
+                <span>Add Family ID</span>
+              </button>
+            </div>
+            <div class="panel is-warning">
+              <div class="panel-heading">Family ID</div>
+              <div class="my-5">
+                <app-family-id-table></app-family-id-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

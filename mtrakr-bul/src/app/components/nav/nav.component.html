@@ -1,0 +1,97 @@
+<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="#"> <strong>Ministry Trakr</strong> </a>
+
+    <a
+      role="button"
+      class="navbar-burger burger"
+      aria-label="menu"
+      aria-expanded="false"
+      data-target="navbarMain"
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarMain" class="navbar-menu">
+    <div class="navbar-start">
+      <a *ngIf="isLoggedIn" class="navbar-item" routerLink="/dashboard">
+        Dashboard
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a *ngIf="isLoggedIn" class="navbar-link"> Events </a>
+
+        <div class="navbar-dropdown">
+          <a class="navbar-item" routerLink="/events"
+            ><span class="icon is-small mr-1">
+              <i class="far fa-calendar"></i>
+            </span>
+            Event
+          </a>
+          <a class="navbar-item" routerLink="/add-event"
+            ><span class="icon is-small mr-1">
+              <i class="far fa-calendar-plus"></i>
+            </span>
+            Add Events
+          </a>
+        </div>
+      </div>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a *ngIf="isLoggedIn" class="navbar-link"> Volunteers </a>
+
+        <div class="navbar-dropdown">
+          <a class="navbar-item" routerLink="/volunteers"
+            ><span class="icon is-small mr-1">
+              <i class="fas fa-user"></i>
+            </span>
+            Volunteer
+          </a>
+          <a class="navbar-item" routerLink="/add-volunteer">
+            <span class="icon is-small mr-1">
+              <i class="fas fa-user-plus"></i> </span
+            >Add Volunteers
+          </a>
+        </div>
+      </div>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a *ngIf="isLoggedIn" class="navbar-link"> Settings </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" routerLink="/family-ids"
+            ><span class="icon is-small mr-1">
+              <i class="fas fa-users-cog"></i>
+            </span>
+            Family ID's
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="navbar-end">
+      <div *ngIf="!isLoggedIn" class="navbar-item">
+        <div class="buttons">
+          <a class="button is-info" routerLink="/register">
+            <span class="icon is-small mr-1"> <i class="far fa-edit"></i> </span
+            >Register
+          </a>
+          <a class="button is-light" routerLink="/login"
+            ><span class="icon is-small mr-1">
+              <i class="fas fa-sign-in-alt"></i>
+            </span>
+            Log in
+          </a>
+        </div>
+      </div>
+      <a *ngIf="isLoggedIn" class="navbar-item">{{ loggedInUser }}</a>
+      <a *ngIf="isLoggedIn" class="navbar-item" (click)="onLogoutClick()"
+        ><span class="icon is-small mr-1">
+          <i class="fas fa-sign-out-alt"></i> </span
+        >Logout</a
+      >
+    </div>
+  </div>
+</nav>

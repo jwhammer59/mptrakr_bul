@@ -1,0 +1,26 @@
+<app-header [title]="headerTitle" [icon]="headerIcon"></app-header>
+<div class="columns is-centered">
+  <div class="column is-four-fifths mt-3">
+    <div class="panel is-link mb-3">
+      <div class="panel-heading">Family ID's Table</div>
+      <div class="level mt-4">
+        <div class="level-item has-text-centered">
+          <div>
+            <button
+              class="button is-link is-outlined"
+              routerLink="/family-id/add-family-id"
+            >
+              <span class="icon is-small mr-1">
+                <i class="fas fa-plus"></i>
+              </span>
+              Add Family ID
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="pb-3">
+        <app-family-id-table></app-family-id-table>
+      </div>
+    </div>
+  </div>
+</div>

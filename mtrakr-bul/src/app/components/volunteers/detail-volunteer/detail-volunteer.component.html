@@ -1,0 +1,415 @@
+<app-header [title]="headerTitle" [icon]="headerIcon"></app-header>
+<div class="container">
+  <!-- Show Delete Volunteer Modal -->
+  <div class="modal" [class.is-active]="showDeleteModal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">
+            <span class="mr-3"><i class="fas fa-exclamation-triangle"></i></span
+            >Delete Volunteer
+          </p>
+          <a
+            (click)="showModalToggle('deleteVolunteerModal')"
+            class="card-header-icon"
+            aria-label="close"
+          >
+            <span class="icon">
+              <i class="far fa-times-circle"></i>
+            </span>
+          </a>
+        </header>
+        <div class="card-content">
+          <div class="content">Are you sure?</div>
+          <div class="field has-addons">
+            <p class="control">
+              <button
+                class="button is-success"
+                (click)="modalDeleteVolunteerResponse(true)"
+              >
+                <span class="icon is-small">
+                  <i class="far fa-thumbs-up"></i>
+                </span>
+                <span>Yes</span>
+              </button>
+            </p>
+            <p class="control">
+              <button
+                class="button is-danger"
+                (click)="modalDeleteVolunteerResponse(false)"
+              >
+                <span class="icon is-small">
+                  <i class="far fa-thumbs-down"></i>
+                </span>
+                <span>No</span>
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Add Un-Available Day Modal -->
+  <div class="modal" [class.is-active]="showUnavailableModal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">Add Un-Available Date</p>
+          <a
+            (click)="showModalToggle('addDateModal')"
+            class="card-header-icon"
+            aria-label="close"
+          >
+            <span class="icon">
+              <i class="far fa-times-circle"></i>
+            </span>
+          </a>
+        </header>
+        <div class="card-content">
+          <div class="content">
+            <form
+              [formGroup]="addDateForm"
+              (ngSubmit)="onSubmit(addDateForm)"
+              novalidate
+            >
+              <div class="field">
+                <div class="control">
+                  <input
+                    class="input"
+                    type="date"
+                    min="2020-01-01"
+                    max="2030-12-31"
+                    formControlName="dateUnAvailable"
+                  />
+                </div>
+                <p *ngIf="invalidDate" class="help is-right">
+                  {{ errorMessage }}
+                </p>
+              </div>
+              <div class="field has-addons">
+                <p class="control">
+                  <button
+                    class="button is-success"
+                    type="submit"
+                    value="Submit"
+                  >
+                    <span class="icon is-small">
+                      <i class="far fa-thumbs-up"></i>
+                    </span>
+                    <span>Save</span>
+                  </button>
+                </p>
+                <p class="control">
+                  <button
+                    class="button is-danger"
+                    (click)="modalDateUnAvailableResponse()"
+                  >
+                    <span class="icon is-small">
+                      <i class="far fa-thumbs-down"></i>
+                    </span>
+                    <span>Cancel</span>
+                  </button>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <header class="card-header">
+      <p class="card-header-title">
+        {{ volunteer.firstName }} {{ volunteer.lastName }}
+      </p>
+      <p class="card-header-title">
+        {{ volunteer.phone | phone }}
+      </p>
+      <div class="card-header-icon">
+        <div>
+          <strong>Family ID:</strong>
+          <span class="id-text">{{ volunteer.familyID }}</span>
+        </div>
+      </div>
+    </header>
+    <div class="card-content">
+      <div class="content">
+        <div class="tabs">
+          <ul>
+            <li [class.is-active]="tabChoice === 1">
+              <a (click)="tabSelect(1)">Address</a>
+            </li>
+            <li [class.is-active]="tabChoice === 2">
+              <a (click)="tabSelect(2)">Available Mass Times</a>
+            </li>
+            <li [class.is-active]="tabChoice === 3">
+              <a (click)="tabSelect(3)">Ministries</a>
+            </li>
+            <li [class.is-active]="tabChoice === 4">
+              <a (click)="tabSelect(4)">Dates Not Available</a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="tabChoice === 1">
+          <div class="address-text">
+            <p>Address 1: {{ volunteer.address1 }}</p>
+            <p>Address 2: {{ volunteer.address2 }}</p>
+            <p>City: {{ volunteer.city }}</p>
+            <p>State: {{ volunteer.state }}</p>
+            <p>Zipcode: {{ volunteer.zipcode }}</p>
+          </div>
+        </div>
+        <div *ngIf="tabChoice === 2">
+          <div class="columns">
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isSaturday"
+                />
+                Available Saturday
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isSundayEarly"
+                />
+                Available Sunday-Early
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isSundayLate"
+                />
+                Available Sunday-Late
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isWeekday"
+                />
+                Available Weekdays
+              </label>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="tabChoice === 3">
+          <div class="columns">
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isEMoHC"
+                />
+                EMoHC
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isCantor"
+                />
+                Cantor
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isLector"
+                />
+                Lector
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isUsher"
+                />
+                Usher
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isServer"
+                />
+                Server
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isMassCoord"
+                />
+                Mass Coordinator
+              </label>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isGifts"
+                />
+                Gifts
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isGiftsChild"
+                />
+                Gifts Child
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isRosary"
+                />
+                Rosary
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isTech"
+                />
+                Technology
+              </label>
+            </div>
+            <div class="column">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [disabled]="true"
+                  [checked]="volunteer.isOther"
+                />
+                Other
+              </label>
+            </div>
+            <div class="column"></div>
+          </div>
+        </div>
+        <div *ngIf="tabChoice === 4">
+          <div class="columns is-centered">
+            <div class="column is-three-quarters">
+              <table
+                class="table"
+                *ngIf="volunteer.dateUnAvailable.length > 0; else noData"
+              >
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let date of unAvailableDates.sort()">
+                    <td>{{ date | date }}</td>
+                    <td>
+                      <button
+                        (click)="onDeleteDateClicked(date, id)"
+                        class="button is-small is-danger"
+                      >
+                        <span class="icon mr-1">
+                          <i class="far fa-trash-alt"></i> </span
+                        >Delete Date
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <ng-template #noData>No UnAvailable Dates Entered</ng-template>
+            </div>
+
+            <div class="columns is-centered">
+              <div class="column is-three-quarters">
+                <button (click)="onAddDateClicked()" class="button is-success">
+                  <span class="icon is-small mr-1">
+                    <i class="far fa-calendar-plus"></i> </span
+                  >Add New Date
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="columns status-group">
+          <div class="column status-checkbox">
+            <label class="checkbox">
+              <input
+                type="checkbox"
+                [disabled]="true"
+                [checked]="volunteer.isAdmin"
+              />
+              Is Admin
+            </label>
+          </div>
+          <div class="column status-checkbox">
+            <label class="checkbox">
+              <input
+                type="checkbox"
+                [disabled]="true"
+                [checked]="volunteer.isAvailable"
+              />
+              Is Available
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="card-footer">
+      <div class="card-footer-item">
+        <button class="button is-primary" routerLink="/volunteers">
+          <span class="icon mr-1">
+            <i class="far fa-arrow-alt-circle-left"></i> </span
+          >Volunteers
+        </button>
+      </div>
+      <div class="card-footer-item">
+        <button class="button is-info" routerLink="/edit-volunteer/{{ id }}">
+          <span class="icon mr-1"> <i class="far fa-edit"></i> </span>Edit
+          Volunteer
+        </button>
+      </div>
+      <div class="card-footer-item">
+        <button class="button is-danger" (click)="onDeleteVolunteerClicked()">
+          <span class="icon mr-1"> <i class="far fa-trash-alt"></i> </span
+          >Delete Volunteer
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>
